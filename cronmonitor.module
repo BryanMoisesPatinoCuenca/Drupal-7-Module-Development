@@ -50,4 +50,31 @@ function cronomonitor_admin_form($form, &$form_state) {
     );
     
     return system_settings_form($form);
+  
 }
+
+/**
+ * Implemets hook_cron().
+ */
+function cronmonitor_cron() {
+  if (variable_get('cronmonitor_enable',0)){
+    //sned cronmonito email.
+    drupal_mail('cronmonitor', 'cronmonitor_email', 'Shane@codekarate.com', language_default());
+    
+  }  
+}
+
+/**
+ * Implements hook mail().
+ */
+ function cronmonitor_mail($key, &$message, $params) {
+   switch ($key) {
+     case 'cronmonitor_email';
+       $message['subject'] = t('this is a cron monitor report');
+       $message['body'][] = t('This is a report from cron monitor on @site-name', array('@site-name' => varible_get('site_name', 'test.practicasdrupal.com')));
+       $message['body'][] = t(variable_get('cronmonitor_email_text',''));
+       
+       break;
+      }
+  }
+ 
