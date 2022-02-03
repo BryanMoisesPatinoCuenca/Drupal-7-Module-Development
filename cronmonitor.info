@@ -1,0 +1,4 @@
+name =""Cron Monitor"
+description = ""Monitor and send email on cron run"
+version= 7.x 0.1"
+configure = admin/configcronmonitor

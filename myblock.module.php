@@ -23,7 +23,7 @@ function myblock_permission() {
   function myblock_menu() {
     $items['mypage'] = array(
       'title' => 'My  Page',
-      'type' => MENU_NORMAL_ITEAM,
+      'type' => MENU_NORMAL_ITEM,
       'page callback' => 'myblock_mypage' ,
       'access arguments' => array('access content')
   );
