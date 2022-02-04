@@ -1,0 +1,65 @@
+<?php
+/**
+ * Implements hook_menu().
+ */
+ 
+function my_example_menu() {
+        $items['mypage-html'] = array(
+            'title' => 'My page wiht HTML-style function',
+            'page callback' => 'my_example_html_page',
+            'access callback' => TRUE,
+        );
+        $items['mypage-renderable'] = array(
+            'title' => 'My page wiht render array function',
+            'page callback' => 'my_example_renderable_page',
+            'access callback' => TRUE,
+            
+        );
+    return $items;
+}
+
+/**
+ * Implements hook theme().
+ */
+
+function my_example_theme($existing, $type, $theme, $path) {
+  return array(
+    'my_example_function' => array(
+      'variables' => array('text_one' => NULL, 'test_two' => NULL),
+      ),
+    'my_example_function' => array(
+        'variables' => array('text_one' => NULL, 'test_two' => NULL),
+        'template' => 'my_example_template'
+      ),
+    );
+}
+
+/**
+ * Callback function using HTML output.
+ */
+function my_example_html_page() {
+    $text_one = "This is text one";
+    return theme('my_example_function', array('text_one' => $text_one,'text two' => 'Text Two'));
+}
+/**
+ * Callback function using renderable array.
+ */ 
+function my_example_renderable_page() {
+    $text_one = "This is text one";
+    $output = array(
+        '#theme' => 'my_exampe_template',
+        '#type' => 'markup',
+        '#text_one' => $text_one,
+        '#theme' => 'Text Two',
+    );
+    return $output;
+}
+
+/**
+ * Theme function example.
+ */
+function theme_my_example_function($variebles) {
+    $output = "<h2>" . $variables['text_one'] . "</h2>";
+    $output =  "<p>" . $variables['text_two'] . "</p>";
+    return $output;
+}

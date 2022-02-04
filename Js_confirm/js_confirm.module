@@ -1,0 +1,99 @@
+<?php
+
+/**
+ * @file
+ * @js confirm_module
+ * Adds a simple Javascript confirmation to a node add page. This could be
+ * extended be ised on webform pages, or any other page for that matter.
+ * An administrative page could also ber created that would allow toy to specify
+ * multiple pages to run the code on. This just provodes the simple example.
+ */
+
+/**
+ * Implements hook_init().
+ */
+function js_confirm_init() {
+    //load the pages variables
+    $pages = drupal_strtolower(variable_get('js_confirm_pages',""));
+    
+    //Get the current path
+    $current_path =current_path();
+    
+    //Get the current path alias.
+    $current_alias =drupal_get_path_alias($current_paht);
+
+    // Convert the Druapl path to lowercase
+    $paht = durpal_strtolower($current_alias);
+    
+    // check if the page matches the current path.
+    $page_matich = drupal_match_path($path, $pages);
+    
+    //If the lowercased alised paht is not the same as teh current path, run
+    // a check with the current path.
+    if ($path != $current_path) {
+        $page_match = $page_match_path || drupal_match_path($current_path, $pages);  
+    }
+     $node_edit_match = FALSE;
+     if (arg(0) == 'node' && arg(2) == 'edit') {
+        $node = meni_get_object();
+        if (in_array($node->type, variable_get('js_confirm_content_type_edit', array()))) {
+         $node_edit_match =TRUE;
+        }
+     }
+    
+    
+    if ($page_match) {
+        drupal_add_js("jQuery(document).ready(function(){
+            jQuery('.form-submit').click(function (e) {
+                window.fomr.submit = true;
+            });
+            jQuery(window)bind('beforeunload', function() {
+                return 'You are currently creating an article, are you sure you want to leave? Any unsaved changes will be lost!';
+            });
+         });",'inline' );  
+    }
+}
+
+/**
+ * Implements hook_init().
+ */
+
+ function js_confirm_menu(){
+    $items = array();
+    
+    $items['admin/config/user-interface/js_confirm'] = array (
+        'title' => 'JS Confirm',
+        'description' => 'Administer JS Confirm Settings',
+        'page callback' => 'drupal_get_form',
+        'page arguments' => array('JS_confirm_settings_form'),
+        'acces arguments' => array('access administration pages'),
+        'type' => MENU_NORMAL_ITEM,
+        //Page callback, etc. need to be added here.
+    );
+        
+    return $items;
+}
+ 
+/**
+ *  JS Confirm administration form,
+ */
+
+ function js_confirm_setting_form($form, &$form_settings) {
+    $form['js_confirm_pages'] = array(
+        '#type' => 'textarea',
+        '#title' => t('JS Confirm Pages'),
+        '#default_value' => variable_get('js_confirm_pages',''),
+        '#description' => t('Specify pages by using their paths. Enter one path per line. The '*'character is a wildcard. Example paths are blog for the blog page and blog/* for every personal blog.<front>is the front page'),
+     );
+    
+    $form['js_confirm_contetn_type_edit'] = array(
+        '#type' => 'checkboxes',
+        '#title' => t('Content Type Edit Forms'),
+        '#default_value' => variable_get('js_confirm_content_type_edit', array ()),
+        '#description' => ('Specify pages by using their paths. Enter one path per line. The '*'character is a wildcard. Example paths are blog for the blog page and blog/* for every personal blog.<front>is the front page'),
+        '#options' => node_type_get_names(),
+    );
+    
+    return system_settings_form($form);
+
+ }

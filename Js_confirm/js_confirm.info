@@ -1,0 +1,3 @@
+core = "7.x"
+description = "Adds JavaScript confirmation form to node add page."
+name = "JS Confirm"
