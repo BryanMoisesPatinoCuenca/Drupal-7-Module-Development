@@ -1,0 +1,23 @@
+<?php
+
+/**
+ * @file
+ * @js confirm_module
+ * Adds a simple Javascript confirmation to a node add page. This could be
+ * extended be ised on webform pages, or any other page for that matter.
+ * An administrative page could also ber created that would allow toy to specify
+ * multiple pages to run the code on. This just provodes the simple example.
+ */
+
+/**
+ * Implements hook_init().
+ */
+function js_confirm_init() {
+    if (current_path() == 'node/add/article') {
+        drupal_add_js("jQuery(document).ready(function(){
+            jQuery(window)bind('beforeunload', function() {
+                return 'You are currently creating an article, are you sure you want to leave? Any unsaved changes will be lost!';
+            });
+         });",'inline' );  
+    }
+}
