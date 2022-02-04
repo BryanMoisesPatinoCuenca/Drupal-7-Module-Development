@@ -31,9 +31,16 @@ function js_confirm_init() {
     //If the lowercased alised paht is not the same as teh current path, run
     // a check with the current path.
     if ($path != $current_path) {
-        $page_match = $page_match_path || drupal_match_path($current_path, $pages);
-    
+        $page_match = $page_match_path || drupal_match_path($current_path, $pages);  
     }
+     $node_edit_match = FALSE;
+     if (arg(0) == 'node' && arg(2) == 'edit') {
+        $node = meni_get_object();
+        if (in_array($node->type, variable_get('js_confirm_content_type_edit', array()))) {
+         $node_edit_match =TRUE;
+        }
+     }
+    
     
     if ($page_match) {
         drupal_add_js("jQuery(document).ready(function(){
@@ -78,6 +85,14 @@ function js_confirm_init() {
         '#default_value' => variable_get('js_confirm_pages',''),
         '#description' => t('Specify pages by using their paths. Enter one path per line. The '*'character is a wildcard. Example paths are blog for the blog page and blog/* for every personal blog.<front>is the front page'),
      );
+    
+    $form['js_confirm_contetn_type_edit'] = array(
+        '#type' => 'checkboxes',
+        '#title' => t('Content Type Edit Forms'),
+        '#default_value' => variable_get('js_confirm_content_type_edit', array ()),
+        '#description' => ('Specify pages by using their paths. Enter one path per line. The '*'character is a wildcard. Example paths are blog for the blog page and blog/* for every personal blog.<front>is the front page'),
+        '#options' => node_type_get_names(),
+    );
     
     return system_settings_form($form);
 
