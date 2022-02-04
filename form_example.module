@@ -10,6 +10,10 @@ function form_example_permission() {
         'title' => t('Submit the form_example form'),
         'description' => t('Submit the form_example form'),
       ),
+      'access form_ example_submissions' => array(
+        'title' => t('Access the form_example form'),
+        'description' => t('Access the form_example submissions'),
+      ),
     );
 }
 
@@ -24,6 +28,12 @@ function form_example_menu() {
     'access argument' => array('submit form example'),
     'page callback' =>'drupal get_form',
     'page arguments' => array('form_example_form'),                          
+  );
+     $items['form-submissions'] = array(
+    'title' => 'My Form Submissions',
+    'type' => MENU_NORMAL_ITEM,
+    'access argument' => array('submit form example submissions'),
+    'page callback' =>('form_example_submissions'),                         
   );
    
   return $items;
@@ -57,15 +67,7 @@ function form_example_form($form, &$form_state) {
     '#description' => t('Enter some tex'),
     '#default value' => '',
     '#required' => TRUE,
-    
-  );
   
-  $form['mytextfield']=array(
-    '#type' => 'textfield',
-    '#title' => t('My Textfield'),
-    '#size' => 60,
-    '#maxlenght' => 128,
-    '#required' => TRUE,
     );
   
     $form['submit'] = array (
@@ -75,5 +77,48 @@ function form_example_form($form, &$form_state) {
     );
     
     return $form;
+  
 }
+
+/**
+ * Validation handler for the form_example_form.
+ */
+
+ function form_example_form_validate($form, &$form_state) {
+  $fe_id = db_insert('dorm_example')
+  ->fields(array(
+    'mynumber' => $form_state['values']['mynumber'],
+    'mytextfield' => $form_state['values']['mytextfield'],
+    'mytextfield' => $form_state['values']['mytext'],
+  ))
+  ->execute();
+  drupal_set_message(t('Your form entry has been added.'));
+ }
+ 
+ /**
+ * View the form submissions.
+ */
+ function form_example_submissions(){
+    //$results = db_query("SELECT * FROM {fomr_example}");
+    
+    $query = db_select('form_example','fe');
+    $query
+      ->field('fe',array('fe_id','mynumber', 'mytextfield','mytext'))
+      ->range(0,50)
+      ->OrderBy('fe.fe_id');
+      $results = $query->execute();
+    $header = array(t('ID'), t('My Number'), t('My Textfield'), t ('MY Text'));
+    $rows = array();
+    
+    foreach($results As $result) {
+      $rows[] = array(
+        check_plain($result->fe_id),
+        check_plain($result->mynumber),
+        check_plain($result->mytextfield),
+        check_plain($result->mytext),
+        
+      );
+    }
+    return theme('table', array('header' => $header,'rows' => $rows));
+ }
 
