@@ -6,7 +6,7 @@
 
 function cronmonitor_permission() {
   return array(
-    'acces cronmonitor' => array(
+    'administer cronmonitor' => array(
       'title' => t('Administer Cron Monitor'),
       'description' => t('Perform administration task for Crom Monitor.'),
       )
@@ -19,8 +19,8 @@ function cronmonitor_menu() {
     $items['admin/config/system/cronmonitor'] = array(
         'title' => 'Cron Monitor Settings',
         'type' =>  MENU_NORMAL_ITEM,     
-        'page callback' => 'drupal get_form',
-        'page arguments' => array('cronmonitor admin form'),
+        'page callback' => 'drupal_get_form',
+        'page arguments' => array('cronmonitor_admin_form'),
         'acces arguments' => array('administer cronmonitor'),
     );
     return $items;
@@ -58,7 +58,7 @@ function cronomonitor_admin_form($form, &$form_state) {
  */
 function cronmonitor_cron() {
   if (variable_get('cronmonitor_enable',0)){
-    //sned cronmonito email.
+    //Send cronmonito email.
     drupal_mail('cronmonitor', 'cronmonitor_email', 'Shane@codekarate.com', language_default());
     
   }  
@@ -71,7 +71,7 @@ function cronmonitor_cron() {
    switch ($key) {
      case 'cronmonitor_email';
        $message['subject'] = t('this is a cron monitor report');
-       $message['body'][] = t('This is a report from cron monitor on @site-name', array('@site-name' => varible_get('site_name', 'test.practicasdrupal.com')));
+       $message['body'][] = t('This is a report from cron monitor on @site-name', array('@site-name' => varible_get('site_name', 'localhost/webdrupal.com')));
        $message['body'][] = t(variable_get('cronmonitor_email_text',''));
        
        break;

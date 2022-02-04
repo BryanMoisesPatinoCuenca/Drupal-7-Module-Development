@@ -1,5 +1,5 @@
-name =""Cron Monitor"
-description = ""Monitor and send email on cron run"
+name ="Cron Monitor"
+description = "Monitor and send email on cron run"
 core = "7.x"
-version= 7.x 0.1"
-configure = admin/configcronmonitor
+version= 7.x-0.1"
+configure = admin/config/cronmonitor
